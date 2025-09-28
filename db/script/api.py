@@ -1,4 +1,24 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, datetime
+
+def registrar_no_banco(temperatura, vibracao, corrente, id_maquina=101):
+    """Função para inserir os dados recebidos no banco de dados."""
+    try:
+        conn = sqlite3.connect(DB_FILE)
+        cursor = conn.cursor()
+        
+        timestamp = datetime.datetime.now().isoformat()
+        
+        # Query SQL para inserir uma nova leitura
+        query = "INSERT INTO leituras_sensores (timestamp, temperatura, vibracao, corrente, id_maquina) VALUES (?, ?, ?, ?, ?)"
+        cursor.execute(query, (timestamp, temperatura, vibracao, corrente, id_maquina))
+        
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"Erro ao inserir no banco de dados: {e}")
+        return False
+
 
 app = Flask(__name__)
 
@@ -14,14 +34,18 @@ def receber_leitura():
     
     temp = data.get('tempC')
     current = data.get('currentA')
-    acc_X = data.get('accX_g')
-    acc_Y = data.get('accY_g')
-    acc_Z = data.get('accZ_g')
+    vibracao = data.get('vibracao_aprox')
+    id_sensor = data.get('id_sensor')
+    # acc_X = data.get('accX_g')
+    # acc_Y = data.get('accY_g')
+    # acc_Z = data.get('accZ_g')
 
-    if temp is None or current is None or acc_X is None or acc_Y is None or acc_Z is None:
+    if temp is None or current is None or vibracao is None:
         return jsonify({"status": "erro", "mensagem": "Dados incompletos"}), 400
+
     
-    print(f"Dados recebidos: Temp={temp}, Corrente={current}, Aceleração Eixo X={acc_X}, Aceleração Eixo Y={acc_Y}, Aceleração Eixo Z={acc_Z}")
+    print(f"Dados recebidos: Temp={temp}, Corrente={current}, Vibração={vibracao}")
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
