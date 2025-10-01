@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "author": "Laís",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -19.2, "left": -14.36, "attrs": {} },
+    { "type": "wokwi-mpu6050", "id": "imu1", "top": -207.38, "left": -7.28, "attrs": {} },
+    {
+      "type": "wokwi-ntc-temperature-sensor",
+      "id": "ntc1",
+      "top": -151,
+      "left": -173.4,
+      "attrs": {}
+    },
+    { "type": "wokwi-potentiometer", "id": "pot1", "top": -58.9, "left": -153.8, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "ntc1:VCC", "esp:3V3", "orange", [ "h0" ] ],
+    [ "ntc1:GND", "esp:GND.2", "black", [ "h0" ] ],
+    [ "esp:34", "ntc1:OUT", "green", [ "h0" ] ],
+    [ "esp:21", "imu1:SDA", "violet", [ "h0" ] ],
+    [ "imu1:SCL", "esp:22", "yellow", [ "v0" ] ],
+    [ "imu1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "pot1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "pot1:GND", "esp:GND.1", "gold", [ "v0" ] ],
+    [ "pot1:SIG", "esp:35", "cyan", [ "v0" ] ],
+    [ "imu1:VCC", "esp:3V3", "gray", [ "v0" ] ]
+  ],
+  "dependencies": {}
+}
